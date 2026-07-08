@@ -18,12 +18,14 @@ Full MVP built and verified locally (build passes; driven end-to-end in a headle
 - First Session Setup done: spec in `docs/`, brand skill in `.claude/skills/the-corporate-brand/SKILL.md`.
 
 ## Last session
-Session 1: ran First Session Setup, then built the whole tool — scoring engine, four views, both exports, sample data, brand styling. Self-hosted the web fonts and embedded the brand fonts in the PDF. Verified every view and all three PDFs + the CSV in a headless browser (rendered a PDF to confirm the brand fonts display). Builder connected the repo to Netlify — live at supplier-scorecard.netlify.app. Fixed a mobile header overflow found during the responsive check (clean 320px→desktop).
+Session 1: ran First Session Setup, then built the whole tool — scoring engine, four views, both exports, sample data, brand styling. Self-hosted the web fonts and embedded the brand fonts in the PDF. Verified every view and all three PDFs + the CSV in a headless browser (rendered a PDF to confirm the brand fonts display). Builder connected the repo to Netlify — live at supplier-scorecard.netlify.app. Fixed a mobile header overflow found during the responsive check (clean 320px→desktop); builder confirmed the live site looks good on a real phone. MVP complete.
 
 ## Remaining work
 - [x] Deployed to Netlify (builder connected the repo); live at the URL above, auto-deploys from `main`.
-- [ ] Acceptance criteria: 1–15, 17, 18 verified on the production build; 16 (responsive) verified locally on the deployed build from 320px→desktop. The public URL itself couldn't be loaded from the build sandbox (egress policy blocks netlify.app) — builder confirmed it loads; worth one manual click-through on a real phone.
-- [ ] Optional refinements deferred: confirm final maturity-anchor wording; adjust sample-supplier values if the builder wants different demo numbers.
+- [x] Acceptance criteria 1–18 all verified. 16 confirmed live on a real phone by the builder (8 July); the rest verified on the production build in a headless browser.
+- [ ] Optional refinements deferred (none blocking): confirm final maturity-anchor wording; adjust sample-supplier values if different demo numbers are wanted; optionally lazy-load the export module to shrink the initial bundle.
+
+MVP is complete and live. Nothing outstanding is required — the items above are optional polish for a future session.
 [Rule: completed items leave this list and are absorbed into Current state. This list only shrinks.]
 
 ## Build decisions
