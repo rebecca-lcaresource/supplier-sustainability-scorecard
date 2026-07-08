@@ -4,7 +4,7 @@
 
 **Session:** 1 — first build
 **Last updated:** 8 July 2026
-**Live URL:** none yet [Rule: fill in after the first successful deploy]
+**Live URL:** pending — merged to `main`, Netlify auto-deploy triggered; fill in the URL once the deploy completes. [Rule: fill in after the first successful deploy]
 
 ## Current state
 Full MVP built and verified locally (build passes; driven end-to-end in a headless browser — intake, form, scorecard, leaderboard, PDF and CSV export all work).
@@ -18,7 +18,7 @@ Full MVP built and verified locally (build passes; driven end-to-end in a headle
 - First Session Setup done: spec in `docs/`, brand skill in `.claude/skills/the-corporate-brand/SKILL.md`.
 
 ## Last session
-Session 1: ran First Session Setup, then built the whole tool — scoring engine, four views, both exports, sample data, brand styling. Verified the build and drove every view in a headless browser; PDF/CSV downloads confirmed and CSV contents checked. Not yet deployed (see Notes).
+Session 1: ran First Session Setup, then built the whole tool — scoring engine, four views, both exports, sample data, brand styling. Self-hosted the web fonts and embedded the brand fonts in the PDF. Verified every view and all three PDFs + the CSV in a headless browser (rendered a PDF to confirm the brand fonts display). Merged to `main`; Netlify auto-deploy triggered.
 
 ## Remaining work
 - [ ] Deploy: once merged to `main`, Netlify auto-deploys — record the Live URL here and re-check acceptance criterion 16 (loads on desktop + mobile).
