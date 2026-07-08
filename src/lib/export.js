@@ -6,6 +6,19 @@ import autoTable from 'jspdf-autotable'
 import { SECTIONS } from './config.js'
 import { QUESTIONS_BY_SECTION } from './questions.js'
 import { scoreSupplier } from './scoring.js'
+import { PDF_FONTS } from './pdfFonts.js'
+
+// Brand font families registered in the PDF (see registerFonts).
+const F_BODY = 'DMSans' // styles: 'light' (300) · 'normal' (400) · 'bold' (500)
+const F_DISPLAY = 'Playfair' // style: 'bold' (700)
+const F_MONO = 'JetBrainsMono' // style: 'normal' (400)
+
+function registerFonts(doc) {
+  for (const f of PDF_FONTS) {
+    doc.addFileToVFS(f.vfs, f.data)
+    doc.addFont(f.vfs, f.family, f.style)
+  }
+}
 
 const FLAG_ORDER = ['PFAS', 'Water Stress', 'Biodiversity-Sensitive Site']
 
@@ -109,14 +122,16 @@ function drawHeader(doc, supplier) {
   doc.setFillColor(...INK)
   doc.rect(MARGIN, MARGIN, 26, 26, 'F')
   doc.setTextColor(...CHALK)
-  doc.setFont('helvetica', 'normal')
+  doc.setFont(F_BODY, 'bold')
   doc.setFontSize(15)
   doc.text('C', MARGIN + 13, MARGIN + 18, { align: 'center' })
-  // Wordmark.
+  // Wordmark — DM Sans Light, tracked.
   doc.setTextColor(...INK)
+  doc.setFont(F_BODY, 'light')
   doc.setFontSize(12)
   doc.text('THE CORPORATE', MARGIN + 36, MARGIN + 17, { charSpace: 1.4 })
   // Right meta.
+  doc.setFont(F_BODY, 'normal')
   doc.setFontSize(8)
   doc.setTextColor(...STONE)
   doc.text('GLOBAL SUPPLIER SUSTAINABILITY ASSESSMENT 2026', pw - MARGIN, MARGIN + 8, {
@@ -135,6 +150,7 @@ function drawFooter(doc) {
   doc.setDrawColor(...STONE)
   doc.setLineWidth(0.5)
   doc.line(MARGIN, ph - 40, pw - MARGIN, ph - 40)
+  doc.setFont(F_BODY, 'light')
   doc.setFontSize(7)
   doc.setTextColor(...STONE)
   doc.text(
@@ -151,6 +167,7 @@ function drawFooter(doc) {
 export function exportSupplierPDF(supplier) {
   const r = scoreSupplier(supplier)
   const doc = new jsPDF({ unit: 'pt', format: 'a4' })
+  registerFonts(doc)
   const pw = doc.internal.pageSize.getWidth()
   const contentW = pw - MARGIN * 2
 
@@ -158,12 +175,12 @@ export function exportSupplierPDF(supplier) {
   let y = MARGIN + 62
 
   // Supplier identity.
-  doc.setFont('helvetica', 'bold')
+  doc.setFont(F_DISPLAY, 'bold')
   doc.setTextColor(...INK)
   doc.setFontSize(22)
   doc.text(supplier.legalName, MARGIN, y)
   y += 16
-  doc.setFont('helvetica', 'normal')
+  doc.setFont(F_BODY, 'light')
   doc.setFontSize(10)
   doc.setTextColor(...STONE)
   doc.text(
@@ -178,10 +195,10 @@ export function exportSupplierPDF(supplier) {
     doc.setFillColor(...LINEN)
     doc.rect(MARGIN, y, contentW, 70, 'F')
     doc.setTextColor(...INK)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont(F_BODY, 'bold')
     doc.setFontSize(14)
     doc.text('EcoVadis-Verified', MARGIN + 16, y + 26)
-    doc.setFont('helvetica', 'normal')
+    doc.setFont(F_BODY, 'light')
     doc.setFontSize(9)
     doc.setTextColor(...STONE)
     doc.text(
@@ -202,7 +219,7 @@ export function exportSupplierPDF(supplier) {
   }
 
   // Composite + band + flags.
-  doc.setFont('helvetica', 'bold')
+  doc.setFont(F_DISPLAY, 'bold')
   doc.setTextColor(...INK)
   doc.setFontSize(52)
   doc.text(`${r.composite}%`, MARGIN, y + 40)
@@ -211,13 +228,14 @@ export function exportSupplierPDF(supplier) {
   const pillY = y + 12
   doc.setFillColor(...INK)
   const bandLabel = r.band.name.toUpperCase()
+  doc.setFont(F_BODY, 'bold')
   doc.setFontSize(11)
   const bandW = doc.getTextWidth(bandLabel) + 24
   doc.rect(pillX, pillY, bandW, 24, 'F')
   doc.setTextColor(...(r.band.name === 'Leading' ? LIME : CHALK))
   doc.text(bandLabel, pillX + 12, pillY + 16, { charSpace: 1 })
   // Composite label.
-  doc.setFont('helvetica', 'normal')
+  doc.setFont(F_BODY, 'normal')
   doc.setFontSize(8)
   doc.setTextColor(...STONE)
   doc.text('COMPOSITE SCORE', MARGIN, y + 4, { charSpace: 1 })
@@ -226,6 +244,7 @@ export function exportSupplierPDF(supplier) {
   let fx = pillX
   const fy = pillY + 34
   if (r.flags.length) {
+    doc.setFont(F_BODY, 'normal')
     doc.setFontSize(8)
     r.flags.forEach((f) => {
       const label = f.name.toUpperCase()
@@ -238,6 +257,7 @@ export function exportSupplierPDF(supplier) {
       fx += w + 8
     })
   } else {
+    doc.setFont(F_BODY, 'light')
     doc.setFontSize(8)
     doc.setTextColor(...STONE)
     doc.text('No risk flags', pillX, fy + 12)
@@ -245,7 +265,7 @@ export function exportSupplierPDF(supplier) {
   y += 78
 
   // Section bars.
-  doc.setFont('helvetica', 'normal')
+  doc.setFont(F_BODY, 'normal')
   doc.setFontSize(8)
   doc.setTextColor(...STONE)
   doc.text('SECTION SCORES', MARGIN, y, { charSpace: 1 })
@@ -254,6 +274,7 @@ export function exportSupplierPDF(supplier) {
   const barW = contentW - 150 - 44
   r.sections.forEach((s) => {
     doc.setTextColor(...INK)
+    doc.setFont(F_BODY, 'light')
     doc.setFontSize(9)
     doc.text(s.label, MARGIN, y + 9)
     doc.setFillColor(...CHALK)
@@ -261,6 +282,7 @@ export function exportSupplierPDF(supplier) {
     doc.setFillColor(...INK)
     doc.rect(barX, y, (barW * s.pct) / 100, 10, 'F')
     doc.setTextColor(...INK)
+    doc.setFont(F_MONO, 'normal')
     doc.text(`${s.pct}%`, pw - MARGIN, y + 9, { align: 'right' })
     y += 18
   })
@@ -299,7 +321,8 @@ export function exportSupplierPDF(supplier) {
     body,
     margin: { left: MARGIN, right: MARGIN, top: MARGIN + 50, bottom: 52 },
     styles: {
-      font: 'helvetica',
+      font: F_BODY,
+      fontStyle: 'light',
       fontSize: 8,
       cellPadding: 4,
       textColor: INK,
@@ -310,13 +333,13 @@ export function exportSupplierPDF(supplier) {
     headStyles: {
       fillColor: LINEN,
       textColor: INK,
-      fontStyle: 'bold',
+      fontStyle: 'normal',
       fontSize: 8,
     },
     columnStyles: {
-      0: { cellWidth: 42 },
+      0: { font: F_MONO, fontStyle: 'normal', cellWidth: 42 },
       2: { cellWidth: 90, textColor: STONE },
-      3: { cellWidth: 34, halign: 'center' },
+      3: { font: F_MONO, fontStyle: 'normal', cellWidth: 34, halign: 'center' },
     },
     didDrawPage: () => {
       drawHeader(doc, supplier)
@@ -333,12 +356,12 @@ export function exportSupplierPDF(supplier) {
     drawFooter(doc)
     keyY = MARGIN + 60
   }
-  doc.setFont('helvetica', 'bold')
+  doc.setFont(F_BODY, 'bold')
   doc.setFontSize(11)
   doc.setTextColor(...INK)
   doc.text('Scoring key', MARGIN, keyY)
   keyY += 16
-  doc.setFont('helvetica', 'normal')
+  doc.setFont(F_BODY, 'light')
   doc.setFontSize(8)
   const keyLines = [
     'Score scale — 0: not addressed · 1: acknowledged only · 2: some activity, no targets/evidence · 3: clear programme with targets · 4: robust, evidenced, externally validated.',

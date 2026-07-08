@@ -12,7 +12,8 @@ Full MVP built and verified locally (build passes; driven end-to-end in a headle
 - **Stack:** React + Vite + Tailwind (custom brand components, no shadcn — see decisions). Fonts via Google Fonts CDN. `netlify.toml` present (build `npm run build`, publish `dist`, SPA redirect).
 - **Scoring engine** (`src/lib/`): `config.js` holds section weights (equal, 1/6, validated to sum to 1 on load) + band thresholds + maturity anchors; `questions.js` is the full six-section rubric; `scoring.js` computes per-question score 0–4, section %, weighted composite %, band, flags, unscored count. EcoVadis bypass, N/A conditional exclusion, and flag-not-scored rules all implemented. Verified: strong scorer = 92% Leading, PFAS supplier = 32% At Risk (PFAS + Water Stress flags, 1 unscored), EcoVadis supplier = no composite.
 - **Views** (`src/views/`): Intake (identity + EcoVadis gate + conditional link), AssessmentForm (all six sections, per-type controls, conditional questions, maturity selectors, live unscored count), Scorecard (composite/band/flags/section bars/per-question breakdown with rationale + scoring key), Leaderboard (ranked scored suppliers + separate EcoVadis group, refresh warning).
-- **Exports** (`src/lib/export.js`): client-side PDF (branded single-supplier scorecard with per-question breakdown, ESRS refs, rationale, scoring key, confidentiality footer) and CSV (leaderboard with composite/band/six sections/flag columns; EcoVadis rows marked, blank scores).
+- **Exports** (`src/lib/export.js`): client-side PDF (branded single-supplier scorecard with per-question breakdown, ESRS refs, rationale, scoring key, confidentiality footer) and CSV (leaderboard with composite/band/six sections/flag columns; EcoVadis rows marked, blank scores). PDF embeds the real brand fonts (Playfair Display, DM Sans, JetBrains Mono).
+- **Fonts:** self-hosted via `@fontsource` (no CDN at runtime — verified zero Google-font requests). Subsetted TTFs embedded in the PDF (`src/lib/pdfFonts.js`, base64, regenerable from `@fontsource` woff2 with fonttools).
 - **Sample data:** three suppliers preloaded (Nordic Precision = EcoVadis-Verified, Meridian = Leading, Coastal Polymer = At Risk + PFAS/Water Stress flags + one unscored question).
 - First Session Setup done: spec in `docs/`, brand skill in `.claude/skills/the-corporate-brand/SKILL.md`.
 
@@ -20,9 +21,9 @@ Full MVP built and verified locally (build passes; driven end-to-end in a headle
 Session 1: ran First Session Setup, then built the whole tool — scoring engine, four views, both exports, sample data, brand styling. Verified the build and drove every view in a headless browser; PDF/CSV downloads confirmed and CSV contents checked. Not yet deployed (see Notes).
 
 ## Remaining work
-- [ ] Deploy: merge this branch to `main` so Netlify auto-deploys, then record the Live URL here and re-check acceptance criterion 16 (loads on desktop + mobile).
+- [ ] Deploy: once merged to `main`, Netlify auto-deploys — record the Live URL here and re-check acceptance criterion 16 (loads on desktop + mobile).
 - [ ] Acceptance criteria: 1–15, 17, 18 pass locally; 16 (live desktop/mobile) pending deploy.
-- [ ] Optional refinements deferred: embed brand fonts in the PDF (currently Helvetica — layout/colour/logo are on-brand); confirm final maturity-anchor wording; adjust sample-supplier values if the builder wants different demo numbers.
+- [ ] Optional refinements deferred: confirm final maturity-anchor wording; adjust sample-supplier values if the builder wants different demo numbers.
 [Rule: completed items leave this list and are absorbed into Current state. This list only shrinks.]
 
 ## Build decisions
@@ -34,9 +35,8 @@ Session 1: ran First Session Setup, then built the whole tool — scoring engine
 - Answer shapes: dropdown/flag = 'yes'|'no'|''; quant = {value, detail}; open = {text, level|null, note}. Unassigned open level → treated as 0 and marked "unscored".
 
 ## Known issues
-- Google Fonts load from CDN at runtime; blocked in the build sandbox (falls back to system fonts there) but loads normally on Netlify. If the builder wants zero external requests, self-host the fonts.
-- PDF uses Helvetica (jsPDF built-in) rather than the brand fonts — layout, colours, logo box, and lime band accent are on-brand; embedding Playfair/DM Sans TTFs is a deferred refinement.
-- Bundle is ~590 kB (jsPDF pulls html2canvas). Acceptable for an internal tool; could lazy-load the export module later.
+- Main JS bundle is ~840 kB (jsPDF + html2canvas + embedded PDF fonts). Acceptable for an internal tool; could lazy-load the export module later. Fonts are subsetted (Latin + PDF symbols) so the PDF-font module is ~180 kB.
+- jsPDF (browser build) rejects TrueType fonts unless the cmap is pruned to the Windows (3,1) format-4 subtable and saved as raw TTF (not woff2) — the font-gen script does both. Note this if regenerating `pdfFonts.js`.
 
 ## Notes for next session
 None.
