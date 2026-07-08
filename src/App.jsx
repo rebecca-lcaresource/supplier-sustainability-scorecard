@@ -14,8 +14,7 @@ export default function App() {
         style={{ borderBottom: '0.5px solid var(--tc-border-strong)', background: 'var(--tc-chalk)' }}
       >
         <div
-          className="mx-auto flex items-center justify-between"
-          style={{ maxWidth: 1120, padding: '18px 40px' }}
+          className="mx-auto flex items-center justify-between gap-3 flex-wrap max-w-page px-4 py-4 sm:px-10"
         >
           <button
             onClick={goToLeaderboard}
@@ -24,7 +23,7 @@ export default function App() {
           >
             <Logo />
           </button>
-          <nav className="flex items-center" style={{ gap: 12 }}>
+          <nav className="flex items-center justify-end gap-3 flex-wrap">
             <button className="tc-btn-secondary" onClick={goToLeaderboard}>
               Leaderboard
               {suppliers.length > 0 && (
@@ -40,10 +39,7 @@ export default function App() {
         </div>
       </header>
 
-      <div
-        className="mx-auto"
-        style={{ maxWidth: 1120, padding: '40px 40px 96px' }}
-      >
+      <div className="mx-auto max-w-page px-4 pt-10 pb-24 sm:px-10">
         <div className="tc-subhead" style={{ marginBottom: 6 }}>
           Supplier Sustainability Scorecard
         </div>
@@ -55,8 +51,8 @@ export default function App() {
 
       <footer style={{ borderTop: '0.5px solid var(--tc-border)' }}>
         <div
-          className="mx-auto tc-label"
-          style={{ maxWidth: 1120, padding: '18px 40px', color: 'var(--tc-stone)' }}
+          className="mx-auto tc-label max-w-page px-4 py-4 sm:px-10"
+          style={{ color: 'var(--tc-stone)' }}
         >
           The Corporate · Internal use only · Global Supplier Sustainability Assessment 2026
         </div>

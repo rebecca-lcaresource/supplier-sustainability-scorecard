@@ -157,7 +157,8 @@ export default function Leaderboard() {
               <p style={{ fontSize: 13, color: 'var(--tc-stone)', marginBottom: 16 }}>
                 Not numerically ranked — verified by an external EcoVadis scorecard.
               </p>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 320 }}>
                 <tbody>
                   {verified.map(({ s }) => (
                     <tr key={s.id}>
@@ -195,6 +196,7 @@ export default function Leaderboard() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           )}
         </>
