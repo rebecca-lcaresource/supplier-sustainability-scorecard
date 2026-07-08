@@ -41,5 +41,5 @@ MVP is complete and live. Nothing outstanding is required — the items above ar
 - jsPDF (browser build) rejects TrueType fonts unless the cmap is pruned to the Windows (3,1) format-4 subtable and saved as raw TTF (not woff2) — the font-gen script does both. Note this if regenerating `pdfFonts.js`.
 
 ## Notes for next session
-None.
+- Write a "How to use" section on the landing page (the Leaderboard view is the current landing view). Explain the reviewer workflow: add a supplier → EcoVadis gate → assessment form → scorecard → export; the session-only/refresh-clears caveat; and how scoring/bands/flags work at a glance. Keep it on-brand (The Corporate voice — precise, direct) and collapsible or compact so it doesn't crowd the leaderboard. Builder to confirm placement (top of Leaderboard vs. a dismissible panel vs. a separate intro).
 [Rule: the builder writes here between sessions. Claude Code reads these aloud at session start, acts on them, then clears this section.]
