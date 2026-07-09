@@ -33,6 +33,9 @@ jobs:
       - run: npm run build -- --base=/supplier-sustainability-scorecard/
       - run: touch dist/.nojekyll
       - uses: actions/configure-pages@v5
+        with:
+          # Turn Pages on via the API so a manual settings change isn't required.
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
