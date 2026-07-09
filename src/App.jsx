@@ -32,7 +32,7 @@ export default function App() {
               onClick={() => setHelpOpen(true)}
               aria-haspopup="dialog"
             >
-              Help
+              About
             </button>
             <button className="tc-btn-secondary" onClick={goToLeaderboard}>
               Leaderboard
