@@ -4,7 +4,7 @@
 
 **Session:** 2 — in progress
 **Last updated:** 9 July 2026
-**Live URL:** https://supplier-scorecard.netlify.app/ — deployed via Netlify (GitHub-connected, auto-deploys from `main`).
+**Live URL:** https://supplier-scorecard.netlify.app/ — GitHub-connected, auto-deploys from `main`. ⚠️ Live site is currently serving an OLDER build: Netlify deploys are paused because the Netlify team ("AI Resource", Free plan) is out of credits (banner: "production deploys and Agent Runners are currently disabled"). Netlify support case is open. Latest code (`7bf7cef`) is on `main` but not yet live.
 
 ## Current state
 Full MVP built and verified locally (build passes; driven end-to-end in a headless browser — intake, form, scorecard, leaderboard, PDF and CSV export all work).
@@ -19,13 +19,14 @@ Full MVP built and verified locally (build passes; driven end-to-end in a headle
 - First Session Setup done: spec in `docs/`, brand skill in `.claude/skills/the-corporate-brand/SKILL.md`.
 
 ## Last session
-Session 2 (9 July): built the "Why & how to use" Help panel — header About button opens a dismissible drawer (desktop) / sheet (mobile), closable via button/backdrop/Escape. Verified open/close/Escape/backdrop and no mobile overflow in a headless browser. Pushed to `main` (Netlify auto-deploys).
+Session 2 (9 July): built the "Why & how to use" Help panel (header About button → dismissible drawer/sheet, closable via button/backdrop/Escape). Added a project skill `add-assessment-question` (`.claude/skills/`) and demo-tested it live (added a Water question, scores shifted as predicted, then reverted). All pushed to `main`. Deployment BLOCKED: the "AI Resource" Netlify team (Free) ran out of credits, pausing production deploys — support case open. Built a production `dist` zip for a manual drag-and-drop deploy once deploys are re-enabled (stashed in the session scratchpad; also sent to the builder).
 
 Session 1: ran First Session Setup, then built the whole tool — scoring engine, four views, both exports, sample data, brand styling. Self-hosted the web fonts and embedded the brand fonts in the PDF. Verified every view and all three PDFs + the CSV in a headless browser. Builder connected the repo to Netlify (live). Fixed a mobile header overflow; builder confirmed the live site on a real phone. MVP complete.
 
 ## Remaining work
 - [x] Deployed to Netlify (builder connected the repo); live at the URL above, auto-deploys from `main`.
 - [x] Acceptance criteria 1–18 all verified. 16 confirmed live on a real phone by the builder (8 July); the rest verified on the production build in a headless browser.
+- [ ] **Get the latest build live.** Blocked on Netlify: the "AI Resource" Free team is out of credits (deploys paused). When resolved: either let `main` auto-deploy (or Trigger deploy → Clear cache and deploy), OR manual drag-and-drop the `dist` zip. Also worth checking whether `supplier-scorecard` should move to a team that has credits (builder may have multiple teams — "AI Resource" vs "lca-resource"). Then hard-refresh and confirm the About button + Help panel are live.
 - [ ] Optional refinements deferred (none blocking): confirm final maturity-anchor wording; adjust sample-supplier values if different demo numbers are wanted; optionally lazy-load the export module to shrink the initial bundle.
 
 MVP is complete and live. Nothing outstanding is required — the items above are optional polish for a future session.
