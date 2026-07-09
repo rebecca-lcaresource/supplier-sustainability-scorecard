@@ -2,23 +2,26 @@
 
 > Claude Code: read this file at the start of every session, before touching anything. Update it at every save point. Replace content — do not append. History lives in git.
 
-**Session:** 1 — first build
-**Last updated:** 8 July 2026
+**Session:** 2 — in progress
+**Last updated:** 9 July 2026
 **Live URL:** https://supplier-scorecard.netlify.app/ — deployed via Netlify (GitHub-connected, auto-deploys from `main`).
 
 ## Current state
 Full MVP built and verified locally (build passes; driven end-to-end in a headless browser — intake, form, scorecard, leaderboard, PDF and CSV export all work).
 
-- **Stack:** React + Vite + Tailwind (custom brand components, no shadcn — see decisions). Fonts via Google Fonts CDN. `netlify.toml` present (build `npm run build`, publish `dist`, SPA redirect).
+- **Stack:** React + Vite + Tailwind (custom brand components, no shadcn — see decisions). Fonts self-hosted via `@fontsource` (no CDN at runtime). `netlify.toml` present (build `npm run build`, publish `dist`, SPA redirect).
 - **Scoring engine** (`src/lib/`): `config.js` holds section weights (equal, 1/6, validated to sum to 1 on load) + band thresholds + maturity anchors; `questions.js` is the full six-section rubric; `scoring.js` computes per-question score 0–4, section %, weighted composite %, band, flags, unscored count. EcoVadis bypass, N/A conditional exclusion, and flag-not-scored rules all implemented. Verified: strong scorer = 92% Leading, PFAS supplier = 32% At Risk (PFAS + Water Stress flags, 1 unscored), EcoVadis supplier = no composite.
 - **Views** (`src/views/`): Intake (identity + EcoVadis gate + conditional link), AssessmentForm (all six sections, per-type controls, conditional questions, maturity selectors, live unscored count), Scorecard (composite/band/flags/section bars/per-question breakdown with rationale + scoring key), Leaderboard (ranked scored suppliers + separate EcoVadis group, refresh warning).
+- **Help panel** (`src/components/HelpPanel.jsx`): "Why & how to use this tool" — opened by a Help button in the header, dismissible (right drawer desktop / full-width sheet mobile; closes via button, backdrop, or Escape). Covers why the tool exists (prioritise by ranking; other factors weighed separately; tie-breaker when multiple vendors supply one item), the add→assess→scorecard→export workflow, a one-line scoring explainer, and the session-only caveat. Kept consistent with the ScoringKey.
 - **Exports** (`src/lib/export.js`): client-side PDF (branded single-supplier scorecard with per-question breakdown, ESRS refs, rationale, scoring key, confidentiality footer) and CSV (leaderboard with composite/band/six sections/flag columns; EcoVadis rows marked, blank scores). PDF embeds the real brand fonts (Playfair Display, DM Sans, JetBrains Mono).
 - **Fonts:** self-hosted via `@fontsource` (no CDN at runtime — verified zero Google-font requests). Subsetted TTFs embedded in the PDF (`src/lib/pdfFonts.js`, base64, regenerable from `@fontsource` woff2 with fonttools).
 - **Sample data:** three suppliers preloaded (Nordic Precision = EcoVadis-Verified, Meridian = Leading, Coastal Polymer = At Risk + PFAS/Water Stress flags + one unscored question).
 - First Session Setup done: spec in `docs/`, brand skill in `.claude/skills/the-corporate-brand/SKILL.md`.
 
 ## Last session
-Session 1: ran First Session Setup, then built the whole tool — scoring engine, four views, both exports, sample data, brand styling. Self-hosted the web fonts and embedded the brand fonts in the PDF. Verified every view and all three PDFs + the CSV in a headless browser (rendered a PDF to confirm the brand fonts display). Builder connected the repo to Netlify — live at supplier-scorecard.netlify.app. Fixed a mobile header overflow found during the responsive check (clean 320px→desktop); builder confirmed the live site looks good on a real phone. MVP complete.
+Session 2 (9 July): built the "Why & how to use" Help panel — header Help button opens a dismissible drawer (desktop) / sheet (mobile), closable via button/backdrop/Escape. Verified open/close/Escape/backdrop and no mobile overflow in a headless browser. Pushed to `main` (Netlify auto-deploys).
+
+Session 1: ran First Session Setup, then built the whole tool — scoring engine, four views, both exports, sample data, brand styling. Self-hosted the web fonts and embedded the brand fonts in the PDF. Verified every view and all three PDFs + the CSV in a headless browser. Builder connected the repo to Netlify (live). Fixed a mobile header overflow; builder confirmed the live site on a real phone. MVP complete.
 
 ## Remaining work
 - [x] Deployed to Netlify (builder connected the repo); live at the URL above, auto-deploys from `main`.
@@ -41,8 +44,5 @@ MVP is complete and live. Nothing outstanding is required — the items above ar
 - jsPDF (browser build) rejects TrueType fonts unless the cmap is pruned to the Windows (3,1) format-4 subtable and saved as raw TTF (not woff2) — the font-gen script does both. Note this if regenerating `pdfFonts.js`.
 
 ## Notes for next session
-- Build a "Why & How to use" panel. Placement DECIDED: a **Help button** (header, next to Leaderboard / Add supplier) opens a **dismissible panel** — right-side drawer on desktop, centered modal on mobile, with a clear close control; reuse existing card/border styling; must not clutter the Leaderboard. On-brand voice (precise, direct, composed — no casual/exclamatory copy).
-  - **Why** (purpose): this internal tool gives reviewers a repeatable, defensible way to score and **prioritise suppliers by their sustainability ranking**. Note that ranking is one input — other factors (pricing, location, lead time, etc.) are weighed separately by the reviewer, and the scorecard is especially useful as a tie-breaker/consideration **when there are multiple vendors for the same item**. Flag those other factors as a future consideration, not something the tool scores today (stays within scope — no benchmark/threshold or non-sustainability scoring per the spec).
-  - **How** (workflow): add a supplier → EcoVadis gate (Yes = verified, skips scoring) → assessment form (six sections, per-type controls, conditional questions) → scorecard (composite, band, flags, per-question rationale) → export PDF / CSV. Include the session-only / refresh-clears caveat and a one-line read on scoring (0–4 per question → section % → weighted composite → band; flags are independent and never change the score).
-  - Keep it concise; link the phrasing to the existing ScoringKey component so the two don't contradict.
+None.
 [Rule: the builder writes here between sessions. Claude Code reads these aloud at session start, acts on them, then clears this section.]

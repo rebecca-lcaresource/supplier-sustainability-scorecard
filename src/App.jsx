@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { useSuppliers } from './context/SuppliersContext.jsx'
 import Logo from './components/Logo.jsx'
+import HelpPanel from './components/HelpPanel.jsx'
 import Intake from './views/Intake.jsx'
 import AssessmentForm from './views/AssessmentForm.jsx'
 import Scorecard from './views/Scorecard.jsx'
@@ -7,6 +9,7 @@ import Leaderboard from './views/Leaderboard.jsx'
 
 export default function App() {
   const { view, suppliers, goToLeaderboard, startNewSupplier } = useSuppliers()
+  const [helpOpen, setHelpOpen] = useState(false)
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--tc-chalk)' }}>
@@ -24,6 +27,13 @@ export default function App() {
             <Logo />
           </button>
           <nav className="flex items-center justify-end gap-3 flex-wrap">
+            <button
+              className="tc-btn-secondary"
+              onClick={() => setHelpOpen(true)}
+              aria-haspopup="dialog"
+            >
+              Help
+            </button>
             <button className="tc-btn-secondary" onClick={goToLeaderboard}>
               Leaderboard
               {suppliers.length > 0 && (
@@ -57,6 +67,8 @@ export default function App() {
           The Corporate · Internal use only · Global Supplier Sustainability Assessment 2026
         </div>
       </footer>
+
+      <HelpPanel open={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
   )
 }
