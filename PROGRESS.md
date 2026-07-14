@@ -4,7 +4,10 @@
 
 **Session:** 2 — in progress
 **Last updated:** 9 July 2026
-**Live URL:** https://supplier-scorecard.netlify.app/ — GitHub-connected, auto-deploys from `main`. ⚠️ Live site is currently serving an OLDER build: Netlify deploys are paused because the Netlify team ("AI Resource", Free plan) is out of credits (banner: "production deploys and Agent Runners are currently disabled"). Netlify support case is open. Latest code (`7bf7cef`) is on `main` but not yet live.
+**⚠️ DEPLOY STATE IS UNSETTLED — read before doing anything:**
+- **GitHub Pages:** https://rebecca-lcaresource.github.io/supplier-sustainability-scorecard/ — the latest build WAS deployed here (workflow run #4 succeeded) and should still be serving it. BUT the `deploy-pages.yml` workflow was **removed on `main` by commit `c927a1c` ("Remove GitHub Pages workflow; deploy via Netlify only")** — not made by Claude. So there is **no longer any auto-deploy to Pages**; future pushes won't update this URL. (URL uses a lowercase "L": lcaresource.)
+- **Netlify:** https://supplier-scorecard.netlify.app/ — deploys PAUSED (the "AI Resource" Free team is out of credits; support case open). Serving an old build.
+- **Net result:** with the Pages workflow gone and Netlify frozen, there is currently **no working auto-deploy** for new changes. See Notes for next session — this needs a decision.
 
 ## Current state
 Full MVP built and verified locally (build passes; driven end-to-end in a headless browser — intake, form, scorecard, leaderboard, PDF and CSV export all work).
@@ -17,19 +20,21 @@ Full MVP built and verified locally (build passes; driven end-to-end in a headle
 - **Fonts:** self-hosted via `@fontsource` (no CDN at runtime — verified zero Google-font requests). Subsetted TTFs embedded in the PDF (`src/lib/pdfFonts.js`, base64, regenerable from `@fontsource` woff2 with fonttools).
 - **Sample data:** three suppliers preloaded (Nordic Precision = EcoVadis-Verified, Meridian = Leading, Coastal Polymer = At Risk + PFAS/Water Stress flags + one unscored question).
 - First Session Setup done: spec in `docs/`, brand skill in `.claude/skills/the-corporate-brand/SKILL.md`.
+- **Deploy:** unsettled (see status header). GitHub Pages worked (run #4 deployed the latest build) but its workflow was removed on `main` by `c927a1c`; Netlify is frozen (out of credits). If GitHub Pages is wanted back, the removed `deploy-pages.yml` built with `--base=/supplier-sustainability-scorecard/` (project subpath) while the repo's default Vite base stays `/` for Netlify (root) — both can coexist; recover it from git history (it's at commit `9819c7b`).
+- **Project skill** `add-assessment-question` (`.claude/skills/`): how to add/change a rubric question and keep scoring consistent.
 
 ## Last session
-Session 2 (9 July): built the "Why & how to use" Help panel (header About button → dismissible drawer/sheet, closable via button/backdrop/Escape). Added a project skill `add-assessment-question` (`.claude/skills/`) and demo-tested it live (added a Water question, scores shifted as predicted, then reverted). All pushed to `main`. Deployment BLOCKED: the "AI Resource" Netlify team (Free) ran out of credits, pausing production deploys — support case open. Built a production `dist` zip for a manual drag-and-drop deploy once deploys are re-enabled (stashed in the session scratchpad; also sent to the builder).
+Session 2 (9 July): built the "Why & how to use" Help panel (header About button → dismissible drawer/sheet). Added a project skill `add-assessment-question` and demo-tested it live (added a Water question, scores shifted as predicted, then reverted). Netlify deploys froze (the "AI Resource" Free team ran out of credits; support case open), so set up **GitHub Pages** as a free alternative: added `deploy-pages.yml` (subpath base), builder enabled Pages, and the deploy went green (run #4) — the latest build reached the Pages URL. Afterwards an external commit on `main` (`c927a1c`, not by Claude) **removed the Pages workflow** ("deploy via Netlify only"). Left main as-is (did not revert someone else's change); corrected PROGRESS to reflect that neither host now auto-deploys and flagged the decision for next session.
 
 Session 1: ran First Session Setup, then built the whole tool — scoring engine, four views, both exports, sample data, brand styling. Self-hosted the web fonts and embedded the brand fonts in the PDF. Verified every view and all three PDFs + the CSV in a headless browser. Builder connected the repo to Netlify (live). Fixed a mobile header overflow; builder confirmed the live site on a real phone. MVP complete.
 
 ## Remaining work
 - [x] Deployed to Netlify (builder connected the repo); live at the URL above, auto-deploys from `main`.
 - [x] Acceptance criteria 1–18 all verified. 16 confirmed live on a real phone by the builder (8 July); the rest verified on the production build in a headless browser.
-- [ ] **Get the latest build live.** Blocked on Netlify: the "AI Resource" Free team is out of credits (deploys paused). When resolved: either let `main` auto-deploy (or Trigger deploy → Clear cache and deploy), OR manual drag-and-drop the `dist` zip. Also worth checking whether `supplier-scorecard` should move to a team that has credits (builder may have multiple teams — "AI Resource" vs "lca-resource"). Then hard-refresh and confirm the About button + Help panel are live.
+- [ ] **DECIDE how to deploy (blocking for shipping new changes).** The Pages workflow was removed (`c927a1c`, "deploy via Netlify only") but Netlify is frozen — so nothing auto-deploys right now. Options: (a) wait for Netlify credits to reset / move the site to a team with credits, then let `main` auto-deploy; (b) restore `deploy-pages.yml` (recover from `9819c7b`) to keep the free GitHub Pages deploy; (c) another host. Confirm the builder's intent before acting.
 - [ ] Optional refinements deferred (none blocking): confirm final maturity-anchor wording; adjust sample-supplier values if different demo numbers are wanted; optionally lazy-load the export module to shrink the initial bundle.
 
-MVP is complete and live. Nothing outstanding is required — the items above are optional polish for a future session.
+MVP code is complete (About panel, skill, all features on `main`). The remaining open item is purely the deploy pipeline, above.
 [Rule: completed items leave this list and are absorbed into Current state. This list only shrinks.]
 
 ## Build decisions
@@ -45,5 +50,5 @@ MVP is complete and live. Nothing outstanding is required — the items above ar
 - jsPDF (browser build) rejects TrueType fonts unless the cmap is pruned to the Windows (3,1) format-4 subtable and saved as raw TTF (not woff2) — the font-gen script does both. Note this if regenerating `pdfFonts.js`.
 
 ## Notes for next session
-None.
+- DEPLOY DECISION NEEDED. Someone removed the GitHub Pages workflow on `main` (`c927a1c`, "deploy via Netlify only"), but Netlify is still frozen (out of credits), so no host auto-deploys right now. The GitHub Pages URL still shows the last successful build. Ask the builder which path they want — wait for Netlify credits, restore the Pages workflow (recover `deploy-pages.yml` from commit `9819c7b`), or another host — before touching deploy config. Do not re-add the Pages workflow unilaterally; it was deliberately removed.
 [Rule: the builder writes here between sessions. Claude Code reads these aloud at session start, acts on them, then clears this section.]
